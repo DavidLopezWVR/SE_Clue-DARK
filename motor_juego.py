@@ -1,70 +1,112 @@
-import random
-from config import personajes, locaciones, armas
+# motor_juego.py
 
-# Posibles escenas del crimen (puedes agregar más)
-introducciones_crimen = [
-    "El cuerpo de {victima} fue encontrado en {lugar}, completamente desfigurado.",
-    "Una extraña desaparición terminó con el hallazgo del cadáver de {victima} en {lugar}.",
-    "{victima} fue hallado sin vida en {lugar}, junto a un misterioso objeto ensangrentado.",
-    "Nadie sabe cómo, pero {victima} apareció muerto en {lugar}, sin señales de lucha.",
-    "En {lugar} se escuchó un grito… después, {victima} fue hallado muerto sin explicación alguna.",
+from config import personajes, armas, locaciones
+
+# ———————————————————————————————
+# 1) Lista de casos predeterminados (5 crímenes)
+#    Cada caso usa exactamente los nombres de config.py
+#—————————————————————————————————
+CRIMENES_PRED = [
+    {
+        "culpable": next(p for p in personajes if p["nombre"] == "Jonas"),
+        "arma":      next(a for a in armas       if a["nombre"] == "Revólver"),
+        "lugar":     next(l for l in locaciones  if l["nombre"] == "La cueva"),
+        "victima":   next(p for p in personajes if p["nombre"] == "Ulrich"),
+        "intro":     "Jonas encontró a Ulrich sin vida en la cueva. Nadie entiende cómo…"
+    },
+    {
+        "culpable": next(p for p in personajes if p["nombre"] == "Martha"),
+        "arma":      next(a for a in armas       if a["nombre"] == "Cuerda"),
+        "lugar":     next(l for l in locaciones  if l["nombre"] == "El búnker"),
+        "victima":   next(p for p in personajes if p["nombre"] == "Noah"),
+        "intro":     "Un grito en el búnker alertó a todos: Martha había acabado con Noah."
+    },
+    {
+        "culpable": next(p for p in personajes if p["nombre"] == "Claudia"),
+        "arma":      next(a for a in armas       if a["nombre"] == "Estatuilla"),
+        "lugar":     next(l for l in locaciones  if l["nombre"] == "La planta nuclear"),
+        "victima":   next(p for p in personajes if p["nombre"] == "Martha"),
+        "intro":     "Claudia descubrió a Martha muerta junto a una estatuilla en la planta nuclear."
+    },
+    {
+        "culpable": next(p for p in personajes if p["nombre"] == "Noah"),
+        "arma":      next(a for a in armas       if a["nombre"] == "Tijeras"),
+        "lugar":     next(l for l in locaciones  if l["nombre"] == "Casa de los Doppler"),
+        "victima":   next(p for p in personajes if p["nombre"] == "Claudia"),
+        "intro":     "Noah atacó a Claudia en la casa de los Doppler con unas tijeras."
+    },
+    {
+        "culpable": next(p for p in personajes if p["nombre"] == "Ulrich"),
+        "arma":      next(a for a in armas       if a["nombre"] == "Jeringa con veneno"),
+        "lugar":     next(l for l in locaciones  if l["nombre"] == "La iglesia"),
+        "victima":   next(p for p in personajes if p["nombre"] == "Jonas"),
+        "intro":     "Ulrich envenenó a Jonas en la iglesia. La traición más inesperada."
+    },
 ]
 
+# ———————————————————————————————
+# 2) Índice interno para iterar los casos
+#—————————————————————————————————
+_indice_crimen = 0
 
-def seleccionar_crimen():
-    personaje = random.choice(personajes)
-    arma = random.choice(armas)
-    lugar = random.choice(locaciones)
-    return {
-        "culpable": personaje,
-        "arma": arma,
-        "lugar": lugar
-    }
+# ———————————————————————————————
+# 3) Variable global que guarda el caso activo
+#—————————————————————————————————
+crimen_real = {}
 
-def mostrar_info_personaje(personaje):
-    print(f"🔍 Sospechoso: {personaje['nombre']} ({personaje['profesion']})")
-    print(f"📅 Edad: {personaje['edad']} | Línea temporal: {personaje['linea_temporal']}")
-    print(f"🧬 Afiliación: {personaje['afiliacion']} | Estado: {personaje['estado']}")
-    print("-" * 40)
-
-def mostrar_info_lugar(lugar):
-    print(f"📍 Lugar: {lugar['nombre']}")
-    print(f"🗺️ Descripción: {lugar['descripcion']}")
-    print(f"🕵️ Pista encontrada: {lugar['pista']}")
-    print("-" * 40)
-
-def mostrar_info_arma(arma):
-    print(f"🔪 Arma: {arma['nombre']}")
-    print(f"📜 Descripción: {arma['descripcion']}")
-    print(f"🕰️ Disponible en: {arma['tiempo']}")
-    print("-" * 40)
-
+# ———————————————————————————————
 def iniciar_juego():
-    print("\n🌀 BIENVENIDO A 'CLUE: Winden' 🕯️")
-    print("El tiempo es confuso. El crimen, aún más...\n")
+    """
+    Selecciona el siguiente caso predeterminado de CRIMENES_PRED,
+    actualiza la variable global crimen_real e incluye 'intro'.
+    Devuelve el dict crimen_real para usarlo en la interfaz.
+    """
+    global _indice_crimen, crimen_real
 
-    # Escoger víctima aleatoria distinta de culpable
-    victima = random.choice(personajes)['nombre']
-    lugar = random.choice(locaciones)['nombre']
-    intro = random.choice(introducciones_crimen).format(victima=victima, lugar=lugar)
+    caso = CRIMENES_PRED[_indice_crimen]
+    _indice_crimen = (_indice_crimen + 1) % len(CRIMENES_PRED)
 
-    print("🧩 Crimen en Winden:")
-    print(intro)
-    print("Tu misión: descubrir al asesino, el arma utilizada y el lugar real del crimen.")
-    print("-" * 40)
-
-    # Elegimos el crimen real
-    culpable = random.choice(personajes)
-    arma = random.choice(armas)
-    lugar_real = random.choice(locaciones)
-
-    return {
-        "culpable": culpable,
-        "arma": arma,
-        "lugar": lugar_real
+    crimen_real = {
+        "culpable": caso["culpable"],
+        "arma":      caso["arma"],
+        "lugar":     caso["lugar"],
+        "victima":   caso["victima"],
+        "intro":     caso["intro"]
     }
 
+    return crimen_real
 
-# Solo se ejecuta si ejecutas este archivo directamente
-if __name__ == "__main__":
-    crimen_real = iniciar_juego()
+# ———————————————————————————————
+def investigar_lugar(nombre_lugar):
+    """
+    Devuelve la pista (string) al investigar una locación.
+    Si coincide con el lugar del crimen actual, muestra evidencia clara.
+    Si no, devuelve la pista estática de esa locación.
+    """
+    loc = next((l for l in locaciones if l["nombre"] == nombre_lugar), None)
+    if not loc:
+        return f"❌ Lugar '{nombre_lugar}' no encontrado."
+
+    # Si es el lugar del crimen
+    if loc["nombre"] == crimen_real["lugar"]["nombre"]:
+        return (
+            f"EVIDENCIA: ¡El arma '{crimen_real['arma']['nombre']}' fue hallada aquí!\n"
+            f"Sospechoso probable: {crimen_real['culpable']['nombre']}"
+        )
+
+    # Pista estática
+    return loc.get("pista_estatica", "No se encontró nada relevante.")
+
+# ———————————————————————————————
+def verificar_acusacion(crimen, acusacion):
+    """
+    Recibe:
+      crimen: dict retornado por iniciar_juego()
+      acusacion: {"asesino": str, "arma": str, "lugar": str}
+    Devuelve True si todos los elementos coinciden con crimen_real.
+    """
+    return (
+        acusacion.get("asesino") == crimen["culpable"]["nombre"] and
+        acusacion.get("arma")    == crimen["arma"]["nombre"]    and
+        acusacion.get("lugar")   == crimen["lugar"]["nombre"]
+    )

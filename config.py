@@ -49,36 +49,41 @@ personajes = [
     }
 ]
 
-# Locaciones con descripciones, pistas e imagen
+# Locaciones con descripción, pista estática, personaje habitual e imagen
 locaciones = [
     {
         "nombre": "La cueva",
         "descripcion": "Un pasadizo entre épocas, marcado por símbolos extraños.",
-        "pista": "Se hallaron rastros de tierra húmeda y una linterna rota.",
+        "pista_estatica": "Se hallaron rastros de tierra húmeda y una linterna rota.",
+        "habitual_de": "Jonas",
         "imagen": "cueva.png"
     },
     {
         "nombre": "El búnker",
         "descripcion": "Refugio usado para esconder secretos en múltiples tiempos.",
-        "pista": "Una cuerda ensangrentada cuelga del techo.",
+        "pista_estatica": "Una cuerda ensangrentada cuelga del techo.",
+        "habitual_de": "Ulrich",
         "imagen": "bunker.png"
     },
     {
         "nombre": "La planta nuclear",
         "descripcion": "Fuente de energía... y de anomalías temporales.",
-        "pista": "Un medidor de radiación alterado fue encontrado cerca.",
+        "pista_estatica": "Un medidor de radiación alterado fue encontrado cerca.",
+        "habitual_de": "Claudia",
         "imagen": "planta.png"
     },
     {
         "nombre": "Casa de los Doppler",
         "descripcion": "Lugar de reuniones y oscuros secretos familiares.",
-        "pista": "Había documentos quemados en la chimenea.",
+        "pista_estatica": "Había documentos quemados en la chimenea.",
+        "habitual_de": "Martha",
         "imagen": "casa_doppler.png"
     },
     {
         "nombre": "La iglesia",
         "descripcion": "Sede de predicaciones extrañas lideradas por Noah.",
-        "pista": "Se encontraron notas escritas en latín.",
+        "pista_estatica": "Se encontraron notas escritas en latín.",
+        "habitual_de": "Noah",
         "imagen": "iglesia.png"
     }
 ]
